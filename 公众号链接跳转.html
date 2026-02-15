@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在跳转到微信...</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #07c160;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h3>正在前往【乔巴的AI基地】...</h3>
+    <p>如果未自动跳转，请点击下方按钮</p>
+    <a id="jump-btn" class="btn" href="http://weixin.qq.com/r/mp/wRFnf37EaSMWrToc90TT">打开微信关注我</a>
+
+    <script>
+        // 尝试自动跳转
+        window.onload = function() {
+            var targetUrl = document.getElementById("jump-btn").href;
+            window.location.href = targetUrl;
+        }
+    </script>
+</body>
+</html>
