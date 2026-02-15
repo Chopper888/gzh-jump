@@ -6,24 +6,21 @@
     <title>关注乔巴大战Comfyui</title>
     <style>
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
-        h3 { margin-top: 0; color: #333; font-size: 22px; }
-        p { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 85%; }
+        h3 { margin-top: 0; color: #333; font-size: 20px; font-weight: bold; }
+        p { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
         
-        /* 二维码样式 */
-        .qr-box { display: none; margin: 0 auto 20px; }
-        .qr-box img { width: 220px; height: 220px; border-radius: 8px; border: 1px solid #eee; }
-        .qr-tip { font-size: 12px; color: #999; margin-top: 10px; }
+        /* 二维码容器 */
+        .qr-box { margin: 20px auto; }
+        .qr-box img { width: 200px; height: 200px; border-radius: 8px; border: 1px solid #eee; display: block; margin: 0 auto; }
+        .qr-tip { font-size: 13px; color: #e64340; font-weight: bold; margin-top: 12px; background: #fff0f0; padding: 8px; border-radius: 4px; display: inline-block;}
 
         /* 按钮样式 */
-        .btn { display: inline-block; padding: 14px 40px; background-color: #07c160; color: white; text-decoration: none; border-radius: 30px; font-size: 16px; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3); }
+        .btn { display: inline-block; padding: 12px 35px; background-color: #07c160; color: white; text-decoration: none; border-radius: 30px; font-size: 16px; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3); margin-top: 10px;}
         .btn:active { transform: scale(0.96); }
 
-        /* 针对电脑端的特殊处理 */
-        @media (min-width: 768px) {
-            .mobile-only { display: none !important; } /* 电脑上隐藏跳转按钮 */
-            .qr-box { display: block !important; }     /* 电脑上强制显示二维码 */
-        }
+        /* 隐藏元素类 */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -31,56 +28,23 @@
     <div class="card">
         <h3 id="title">欢迎来到乔巴大战Comfyui</h3>
         
-        <div id="pc-view" class="qr-box">
-            <img src="qrcode.jpg" alt="公众号二维码">
-            <div class="qr-tip">请使用微信扫一扫，关注公众号获取资源</div>
-        </div>
+        <div id="content-area">
+            <div class="qr-box">
+                <img src="qrcode.jpg" alt="公众号二维码">
+                <div id="tip-text" class="qr-tip">请使用微信扫一扫</div>
+            </div>
 
-        <div id="mobile-view">
-            <p id="status-text">正在尝试唤起微信...</p>
-            <a id="jump-btn" class="btn" href="http://weixin.qq.com/r/mp/wRFnf37EaSMWrToc90TT">手动点此打开微信</a>
+            <a id="jump-btn" class="btn hidden" href="http://weixin.qq.com/r/mp/wRFnf37EaSMWrToc90TT">打开微信关注</a>
         </div>
     </div>
 
     <script>
-        // 检测是否为移动端
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
+        // === 环境检测函数 ===
+        var userAgent = navigator.userAgent.toLowerCase();
+        var isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+        var isWechat = /micromessenger/i.test(userAgent);
 
-        // 获取元素
-        var pcView = document.getElementById('pc-view');
-        var mobileView = document.getElementById('mobile-view');
+        // === 获取元素 ===
         var title = document.getElementById('title');
-        var statusText = document.getElementById('status-text');
-        var jumpBtn = document.getElementById('jump-btn');
-
-        // 核心逻辑
-        if (!isMobile()) {
-            // === 场景A：如果是电脑 (RunningHub用户) ===
-            pcView.style.display = 'block';     // 显示二维码
-            mobileView.style.display = 'none';  // 隐藏跳转按钮
-            title.innerText = "微信扫码关注";
-        } else {
-            // === 场景B：如果是手机 ===
-            pcView.style.display = 'none';      // 隐藏大二维码
-            mobileView.style.display = 'block'; // 显示按钮
-            
-            // 尝试自动跳转
-            setTimeout(function() {
-                window.location.href = jumpBtn.href;
-            }, 500);
-
-            // 如果是在微信内部打开（会有拦截提示），稍微改下文案
-            var isWechat = /MicroMessenger/i.test(navigator.userAgent);
-            if (isWechat) {
-                statusText.innerHTML = "如果未自动跳转<br>请点击下方按钮，或<b>长按识别下方二维码</b>";
-                // 为了保险，手机微信里也可以把二维码露出来作为备选
-                pcView.style.display = 'block'; 
-                pcView.querySelector('img').style.width = "180px"; // 手机上稍微调小点
-                pcView.querySelector('img').style.height = "180px";
-            }
-        }
-    </script>
-</body>
-</html>
+        var tipText = document.getElementById('tip-text');
+        var jumpBtn = document.getElementById('jump
